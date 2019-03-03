@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.util.stream.Stream;
 
@@ -17,6 +16,15 @@ class FizzBuzzTest {
 
     private static Stream<Integer> dataProvider() {
         return Stream.of(5, 10, 20, 40, 100, 110, 11110);
+    }
+
+    private static Stream<Arguments> dataProviderAll() {
+        return Stream.of(
+                Arguments.arguments(1, "1"),
+                Arguments.arguments(3, "Fizz!"),
+                Arguments.arguments(5, "Buzz!"),
+                Arguments.arguments(15, "FizzBuzz!")
+        );
     }
 
     @BeforeEach
@@ -32,7 +40,7 @@ class FizzBuzzTest {
         assertEquals(expectedResult, actualResult);
     }
 
-    @ParameterizedTest(name="{index} - value{0}")
+    @ParameterizedTest(name="{index} - for {0} should return {1}")
     @MethodSource("dataProvider")
     void shouldReturnBuzzIfDivisibleBy5(int number) {
         String expectedResult = "Buzz!";
@@ -55,5 +63,20 @@ class FizzBuzzTest {
     @Test
     public void shouldThrowArithmeticExceptionIfNumberLessThanZero(){
         Assertions.assertThrows(ArithmeticException.class, () -> fizzBuzz0.play(-1));
+    }
+
+    @ParameterizedTest(name="{index} - for {0} should return {1}")
+    @MethodSource("dataProviderAll")
+    public void shouldReturnExpectedValue(int number, String expectedResult){
+        String actualResult = fizzBuzz0.play(number);
+        assertEquals(expectedResult, actualResult);
+    }
+
+    @ParameterizedTest(name="{index} - for {0} should return {1}")
+    @CsvFileSource(resources = "/test_data.csv", delimiter = ';', numLinesToSkip = 1)
+    @CsvSource(value = {"110,Buzz!", "204,Fizz!"})
+    public void shouldReturnExpectedValueFromCsv(int number, String expectedResult){
+        String actualResult = fizzBuzz0.play(number);
+        assertEquals(expectedResult, actualResult);
     }
 }
