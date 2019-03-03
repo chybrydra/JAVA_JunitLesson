@@ -9,7 +9,9 @@ class FizzBuzzTest {
 
     @Test
     public void shouldReturnFizzWhenDivisbleBy3(){
-        Assertions.assertThat(fizzBuzz.play(6)).isEqualTo("Fizz!");
+        Assertions.assertThat(fizzBuzz.play(6))
+                .isNotBlank()
+                .isEqualTo("Fizz!");
     }
 
     @Test
@@ -20,5 +22,12 @@ class FizzBuzzTest {
     @Test
     public void shouldReturnBuzzWhenDivisibleBy3And5(){
         Assertions.assertThat(fizzBuzz.play(105)).isEqualTo("FizzBuzz!");
+    }
+
+    @Test
+    public void shouldThrowExceptionForNegativeNumber(){
+        int number = -1;
+        Assertions.assertThatThrownBy(() -> fizzBuzz.play(number))
+                .isInstanceOf(ArithmeticException.class);
     }
 }
