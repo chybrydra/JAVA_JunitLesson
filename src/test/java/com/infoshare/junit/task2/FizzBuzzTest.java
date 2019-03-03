@@ -4,13 +4,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FizzBuzzTest {
 
     FizzBuzz fizzBuzz0;
+
+    private static Stream<Integer> dataProvider() {
+        return Stream.of(5, 10, 20, 40, 100, 110, 11110);
+    }
 
     @BeforeEach
     void initData(){
@@ -25,10 +32,12 @@ class FizzBuzzTest {
         assertEquals(expectedResult, actualResult);
     }
 
-    @Test
-    void shouldReturnBuzzIfDivisibleBy5() {
-        String result = fizzBuzz0.play(10);
-        assertEquals("Buzz!", result);
+    @ParameterizedTest(name="{index} - value{0}")
+    @MethodSource("dataProvider")
+    void shouldReturnBuzzIfDivisibleBy5(int number) {
+        String expectedResult = "Buzz!";
+        String actualResult = fizzBuzz0.play(number);
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
